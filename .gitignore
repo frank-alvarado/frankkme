@@ -1,7 +1,18 @@
 node_modules/
 .next/
 out/
+# macOS
 .DS_Store
+
+# Terraform
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.*
+terraform/.terraform.lock.hcl
+
+# IDE
+.vscode/
+
 .env.local
 .env.development.local
 .env.test.local
