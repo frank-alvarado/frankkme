@@ -37,44 +37,11 @@ jobs:
         run: |
           # Create preview folder in S3 bucket
           aws s3 sync out/ s3://${{ secrets.S3_BUCKET_NAME }}/pr-${{ env.PR_NUMBER }}/ --delete --cache-control max-age=60
+          
+          # Output the S3 website URL for verification
+          echo "Deployed to: https://${{ secrets.S3_BUCKET_NAME }}.s3-website-${{ env.AWS_REGION }}.amazonaws.com/pr-${{ env.PR_NUMBER }}/"
 
-      - name: Create or update Cloudflare DNS record for PR
-        run: |
-          # Check if jq is available (should be pre-installed on GitHub runners)
-          which jq || sudo apt-get update && sudo apt-get install -y jq
-          
-          # Check if DNS record exists
-          RECORD_ID=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones/${{ secrets.CLOUDFLARE_ZONE_ID }}/dns_records?name=pr-${{ env.PR_NUMBER }}.frankk.me" \
-            -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
-            -H "Content-Type: application/json" | jq -r '.result[0].id // empty')
-          
-          S3_WEBSITE_URL="${{ secrets.S3_BUCKET_NAME }}.s3-website-${{ env.AWS_REGION }}.amazonaws.com"
-          
-          if [ -n "$RECORD_ID" ]; then
-            # Update existing record
-            curl -s -X PUT "https://api.cloudflare.com/client/v4/zones/${{ secrets.CLOUDFLARE_ZONE_ID }}/dns_records/$RECORD_ID" \
-              -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
-              -H "Content-Type: application/json" \
-              --data "{
-                \"type\": \"CNAME\",
-                \"name\": \"pr-${{ env.PR_NUMBER }}\",
-                \"content\": \"$S3_WEBSITE_URL\",
-                \"ttl\": 1,
-                \"proxied\": true
-              }"
-          else
-            # Create new record
-            curl -s -X POST "https://api.cloudflare.com/client/v4/zones/${{ secrets.CLOUDFLARE_ZONE_ID }}/dns_records" \
-              -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
-              -H "Content-Type: application/json" \
-              --data "{
-                \"type\": \"CNAME\",
-                \"name\": \"pr-${{ env.PR_NUMBER }}\",
-                \"content\": \"$S3_WEBSITE_URL\",
-                \"ttl\": 1,
-                \"proxied\": true
-              }"
-          fi
+      # Note: DNS for PR subdomains is now handled by Terraform with a wildcard record
 
       - name: Comment on PR
         uses: actions/github-script@v6
@@ -84,5 +51,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `✅ Preview deployed to: https://pr-${process.env.PR_NUMBER}.frankk.me/pr-${process.env.PR_NUMBER}/`
+              body: `✅ Preview deployed! View at either URL:\n\n- Direct S3: https://${{ secrets.S3_BUCKET_NAME }}.s3-website-${{ env.AWS_REGION }}.amazonaws.com/pr-${process.env.PR_NUMBER}/\n- Custom Domain: https://pr-${process.env.PR_NUMBER}.frankk.me/pr-${process.env.PR_NUMBER}/`
             })
