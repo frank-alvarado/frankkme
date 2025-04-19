@@ -10,12 +10,16 @@ jobs:
     name: Provision Infrastructure
     runs-on: ubuntu-latest
     env:
+      # AWS credentials
       AWS_REGION: us-east-1
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_DEFAULT_REGION: us-east-1
+      # Cloudflare authentication
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+      
+      # Terraform variables
       TF_VAR_s3_bucket_name: ${{ secrets.S3_BUCKET_NAME }}
       TF_VAR_domain_name: frankk.me
       TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -28,6 +32,15 @@ jobs:
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: '1.5.0'
+
+      - name: Ensure State Bucket Exists
+        working-directory: infrastructure
+        run: |
+          if ! aws s3 ls s3://${{ secrets.S3_BUCKET_NAME }}-terraform-state &>/dev/null; then
+            echo "Creating Terraform state bucket..."
+            aws s3 mb s3://${{ secrets.S3_BUCKET_NAME }}-terraform-state
+            aws s3api put-bucket-versioning --bucket ${{ secrets.S3_BUCKET_NAME }}-terraform-state --versioning-configuration Status=Enabled
+          fi
 
       - name: Terraform Init
         working-directory: infrastructure
@@ -64,10 +77,12 @@ jobs:
     needs: infrastructure
     runs-on: ubuntu-latest
     env:
+      # AWS credentials
       AWS_REGION: us-east-1
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_DEFAULT_REGION: us-east-1
+      # Deployment configuration
       S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
       CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
     steps:
