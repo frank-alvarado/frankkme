@@ -13,6 +13,10 @@ jobs:
       AWS_REGION: us-east-1
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+      TF_VAR_s3_bucket_name: ${{ secrets.S3_BUCKET_NAME }}
+      TF_VAR_domain_name: frankk.me
+      TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      TF_VAR_cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -32,10 +36,6 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ env.AWS_REGION }}
-          TF_VAR_s3_bucket_name: ${{ secrets.S3_BUCKET_NAME }}
-          TF_VAR_domain_name: frankk.me
-          TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          TF_VAR_cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
         run: |
           if ! terraform state list | grep -q aws_s3_bucket.site; then
             terraform import aws_s3_bucket.site ${{ secrets.S3_BUCKET_NAME }}
@@ -47,14 +47,13 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ env.AWS_REGION }}
-          TF_VAR_s3_bucket_name: ${{ secrets.S3_BUCKET_NAME }}
-          TF_VAR_domain_name: frankk.me
-          TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          TF_VAR_cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
         run: |
-          dist_id=$(aws cloudfront list-distributions \
-            --query "DistributionList.Items[?contains(Aliases.Items, '${TF_VAR_domain_name}')].Id" \
-            --output text)
+          # install jq for JSON parsing
+          sudo apt-get update && sudo apt-get install -y jq
+          # find and import existing CloudFront distribution by alias
+          domain=${TF_VAR_domain_name}
+          dist_id=$(aws cloudfront list-distributions --output json \
+            | jq -r ".DistributionList.Items[] | select((.Aliases.Items // []) | index(\"${domain}\")) | .Id")
           if [ -n "$dist_id" ]; then
             terraform import aws_cloudfront_distribution.cdn $dist_id
           fi
@@ -66,10 +65,6 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ env.AWS_REGION }}
-          TF_VAR_s3_bucket_name: ${{ secrets.S3_BUCKET_NAME }}
-          TF_VAR_domain_name: frankk.me
-          TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          TF_VAR_cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
 
   build_and_deploy:
     name: Build and Deploy Site
