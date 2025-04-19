@@ -13,13 +13,17 @@
    ```hcl
    variable "s3_bucket_name" { default = "<YOUR_UNIQUE_BUCKET>" }
    variable "domain_name"    { default = "frankk.me" }
-   variable "route53_zone_id"{ default = "<YOUR_ZONE_ID>" }
    ```
-3. Initialize Terraform
+3. Ensure Terraform state bucket exists
    ```bash
-   terraform init
+   aws s3 ls s3://${S3_BUCKET_NAME}-terraform-state || aws s3 mb s3://${S3_BUCKET_NAME}-terraform-state
+   aws s3api put-bucket-versioning --bucket ${S3_BUCKET_NAME}-terraform-state --versioning-configuration Status=Enabled
    ```
-4. Apply changes
+4. Initialize Terraform with remote state
+   ```bash
+   terraform init -backend-config=bucket=${S3_BUCKET_NAME}-terraform-state -backend-config=region=us-east-1
+   ```
+5. Apply changes
    ```bash
    terraform apply
    ```
@@ -41,7 +45,7 @@ In your GitHub repo under **Settings > Secrets > Actions**, add:
 ## 3. CI/CD with GitHub Actions
 Your pipeline triggers on `push` to `main`:
 - Installs dependencies (`npm ci`)
-- Build the site: `npm run build` (static export is automatic via `next.config.js`)
+- Build the site: `npm run build` (static export is automatic via Next.js 14's `output: 'export'` in next.config.js)
 - Syncs `/out/` to S3 (`aws s3 sync`)
 - Invalidates CloudFront cache (`aws cloudfront create-invalidation`)
 

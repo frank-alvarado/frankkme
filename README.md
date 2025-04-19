@@ -31,22 +31,31 @@ This project is deployed via GitHub Actions. Ensure you’ve configured the foll
 
 Pushes to the `main` branch trigger:
 - Install dependencies: `npm ci`
-- Build the site: `npm run build`
-- Sync `out/` to S3: `aws s3 sync out/ s3://${{ secrets.S3_BUCKET_NAME }} --delete --acl public-read`
+- Build the site: `npm run build` (static export via Next.js 14's `output: 'export'`)
+- Sync `out/` to S3: `aws s3 sync out/ s3://${{ secrets.S3_BUCKET_NAME }} --delete --cache-control max-age=60`
 - Invalidate CloudFront cache: `aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"`
 
 ## Infrastructure
-Infrastructure as code in `/infrastructure`. Ensure Terraform variables are set (`s3_bucket_name`, `domain_name`, `cloudflare_api_token`, `cloudflare_zone_id`). To provision:
+Infrastructure as code in `/infrastructure`. Ensure Terraform variables are set (`s3_bucket_name`, `domain_name`, `cloudflare_api_token`, `cloudflare_zone_id`). 
+
+The project uses a dedicated S3 bucket for Terraform state (`${S3_BUCKET_NAME}-terraform-state`). To provision:
+
 ```bash
 cd infrastructure
-terraform init
+# First-time setup only (already done):
+# aws s3 mb s3://${S3_BUCKET_NAME}-terraform-state
+# aws s3api put-bucket-versioning --bucket ${S3_BUCKET_NAME}-terraform-state --versioning-configuration Status=Enabled
+
+terraform init -backend-config=bucket=${S3_BUCKET_NAME}-terraform-state -backend-config=region=us-east-1
 terraform apply
 ```
+
 After applying, retrieve outputs:
 ```bash
 terraform output cloudfront_domain
 terraform output domain_validation_options
 ```
+
 Terraform provisions Cloudflare DNS records automatically for your ACM validation and site CNAME, so no manual DNS steps are required.
 
 ## Editing Content
