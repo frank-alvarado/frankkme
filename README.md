@@ -8,7 +8,7 @@ Personal website / online CV built with Next.js & Tailwind CSS
 Hosted on AWS S3 & CloudFront via GitHub Actions CI/CD
 
 ## Tech Stack
-- Next.js (Static Generation)
+- Next.js 15 (Static Generation)
 - Tailwind CSS (Utility-first CSS)
 - AWS S3 & CloudFront (Hosting & CDN)
 - Terraform (Infrastructure as Code)
@@ -31,7 +31,7 @@ This project is deployed via GitHub Actions. Ensure you’ve configured the foll
 
 Pushes to the `main` branch trigger:
 - Install dependencies: `npm ci`
-- Build the site: `npm run build` (static export via Next.js 14's `output: 'export'`)
+- Build the site: `npm run build` (static export via Next.js 15's `output: 'export'`)
 - Sync `out/` to S3: `aws s3 sync out/ s3://${{ secrets.S3_BUCKET_NAME }} --delete --cache-control max-age=60`
 - Invalidate CloudFront cache: `aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"`
 
