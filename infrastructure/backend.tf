@@ -1,6 +1,6 @@
 terraform {
   backend "s3" {
-    # bucket and region configured via CLI with -backend-config
-    key = "terraform.tfstate"
+    # Use dedicated state bucket configured via CLI with -backend-config
+    key = "frankk-website.tfstate"
   }
 }
