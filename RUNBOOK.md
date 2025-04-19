@@ -24,7 +24,7 @@
    terraform apply
    ```
    - Confirm when prompted
-   - Note outputs: `s3_bucket_name` and CloudFront distribution domain/ID
+   - Note outputs: `s3_bucket_name`, `cloudfront_domain`, and `domain_validation_options`
 
 ---
 ## 2. Configure GitHub Secrets
@@ -33,6 +33,8 @@ In your GitHub repo under **Settings > Secrets > Actions**, add:
 - `AWS_SECRET_ACCESS_KEY`
 - `S3_BUCKET_NAME` (from Terraform output)
 - `CLOUDFRONT_DISTRIBUTION_ID` (CF dist ID from Terraform or AWS console)
+- `CLOUDFLARE_API_TOKEN` (for Cloudflare provider)
+- `CLOUDFLARE_ZONE_ID` (your Cloudflare zone ID for frankk.me)
 
 ---
 ## 3. CI/CD with GitHub Actions

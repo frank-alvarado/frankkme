@@ -1,6 +1,6 @@
 # frankk.me
 
-[![Deploy](https://github.com/frank-alvarado/frankkme/actions/workflows/deploy.yml/badge.svg)](https://github.com/frank-alvarado/frankkme/actions/workflows/deploy.yml)
+[![CI/CD](https://github.com/frank-alvarado/frankkme/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/frank-alvarado/frankkme/actions/workflows/ci-cd.yml)
 [Live Site](https://frankk.me)
 
 Personal website / online CV built with Next.js & Tailwind CSS
