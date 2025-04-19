@@ -29,11 +29,19 @@ This project is deployed via GitHub Actions. Ensure you’ve configured the foll
 - `CLOUDFLARE_API_TOKEN`
 - `CLOUDFLARE_ZONE_ID`
 
+### Main Deployment
 Pushes to the `main` branch trigger:
 - Install dependencies: `npm ci`
 - Build the site: `npm run build` (static export via Next.js 14's `output: 'export'`)
 - Sync `out/` to S3: `aws s3 sync out/ s3://${{ secrets.S3_BUCKET_NAME }} --delete --cache-control max-age=60`
 - Invalidate CloudFront cache: `aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"`
+
+### PR Preview Deployments
+Pull requests get automatic preview deployments:
+- Each PR gets a dedicated preview URL: `https://dev-{PR_NUMBER}.frankk.me/pr-{PR_NUMBER}/`
+- Preview updates automatically when PR code changes
+- A comment with the preview link is posted on the PR
+- Preview environments leverage the same CloudFront distribution through path-based routing
 
 ## Infrastructure
 Infrastructure as code in `/infrastructure`. Ensure Terraform variables are set (`s3_bucket_name`, `domain_name`, `cloudflare_api_token`, `cloudflare_zone_id`). 

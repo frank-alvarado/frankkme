@@ -157,3 +157,14 @@ resource "cloudflare_record" "cname" {
   ttl     = 1
   allow_overwrite = true
 }
+
+# Wildcard DNS record for PR preview environments
+resource "cloudflare_record" "wildcard" {
+  zone_id         = local.cf_zone_id
+  name            = "*.${var.domain_name}"
+  type            = "CNAME"
+  value           = aws_cloudfront_distribution.cdn.domain_name
+  proxied         = true
+  ttl             = 1
+  allow_overwrite = true
+}
