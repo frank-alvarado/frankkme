@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches: 
+      - main
 
 jobs:
   test:
@@ -46,6 +49,8 @@ jobs:
           
   infrastructure:
     name: Provision Infrastructure
+    # Only run on pushes to main, skip for PRs
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     env:
       # AWS credentials
@@ -90,6 +95,8 @@ jobs:
 
   build_and_deploy:
     name: Build and Deploy Site
+    # Only run on pushes to main, skip for PRs
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: [test, infrastructure]
     runs-on: ubuntu-latest
     env:
