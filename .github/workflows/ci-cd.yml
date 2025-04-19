@@ -53,7 +53,7 @@ jobs:
           TF_VAR_cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
         run: |
           dist_id=$(aws cloudfront list-distributions \
-            --query "DistributionList.Items[?contains(Aliases.Items, '$DOMAIN_NAME')].Id" \
+            --query "DistributionList.Items[?contains(Aliases.Items, '${TF_VAR_domain_name}')].Id" \
             --output text)
           if [ -n "$dist_id" ]; then
             terraform import aws_cloudfront_distribution.cdn $dist_id
