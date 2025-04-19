@@ -41,6 +41,21 @@ jobs:
             terraform import aws_s3_bucket.site ${{ secrets.S3_BUCKET_NAME }}
           fi
 
+      - name: Import existing CloudFront distribution
+        working-directory: infrastructure
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ env.AWS_REGION }}
+          DOMAIN_NAME: frankk.me
+        run: |
+          dist_id=$(aws cloudfront list-distributions \
+            --query "DistributionList.Items[?contains(Aliases.Items, '$DOMAIN_NAME')].Id" \
+            --output text)
+          if [ -n "$dist_id" ]; then
+            terraform import aws_cloudfront_distribution.cdn $dist_id
+          fi
+
       - name: Terraform Apply
         run: terraform apply -auto-approve
         working-directory: infrastructure
