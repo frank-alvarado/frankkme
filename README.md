@@ -22,19 +22,33 @@ Hosted on AWS S3 & CloudFront via GitHub Actions CI/CD
 4. Browse to `http://localhost:3000`
 
 ## Deployment
-This project is deployed via GitHub Actions. Ensure you’ve configured the following repository Secrets under **Settings > Secrets & variables > Actions**:
+Your site is fully deployed via GitHub Actions on pushes and pull requests against `main`.
+
+Automated workflow:
+1. Checkout code and install dependencies (`npm ci`).
+2. **Test & Coverage**: `jest --ci --coverage`, upload to Codecov.
+3. **Infrastructure**: `terraform init && terraform apply` in `/infrastructure`.
+4. **Build**: `npm run build` exports static files to `out/`.
+5. **Deploy**: sync `out/` to S3 and invalidate CloudFront cache.
+
+Required GitHub Secrets (Settings → Secrets & variables → Actions):
 - `AWS_ACCESS_KEY_ID`
 - `AWS_SECRET_ACCESS_KEY`
 - `S3_BUCKET_NAME`
-- `CLOUDFRONT_DISTRIBUTION_ID`
+-`CLOUDFRONT_DISTRIBUTION_ID`
 - `CLOUDFLARE_API_TOKEN`
 - `CLOUDFLARE_ZONE_ID`
 
-Pushes to the `main` branch trigger:
-- Install dependencies: `npm ci`
-- Build the site: `npm run build` (static export via Next.js 15's `output: 'export'`)
-- Sync `out/` to S3: `aws s3 sync out/ s3://${{ secrets.S3_BUCKET_NAME }} --delete --cache-control max-age=60`
-- Invalidate CloudFront cache: `aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"`
+**Manual deploy** (optional):
+```bash
+# 1. Install and build
+npm ci
+npm run build
+
+# 2. Sync to S3 and invalidate cache
+aws s3 sync out/ s3/$S3_BUCKET_NAME --delete --cache-control max-age=60
+aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths '/*'
+```
 
 ## Infrastructure
 Infrastructure as code in `/infrastructure`. Ensure Terraform variables are set (`s3_bucket_name`, `domain_name`, `cloudflare_api_token`, `cloudflare_zone_id`). 
