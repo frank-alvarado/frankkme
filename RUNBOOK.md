@@ -41,7 +41,7 @@ In your GitHub repo under **Settings > Secrets > Actions**, add:
 ## 3. CI/CD with GitHub Actions
 Your pipeline triggers on `push` to `main`:
 - Installs dependencies (`npm ci`)
-- Builds static site (`npm run build`, exports to `/out`)
+- Build the site: `npm run build` (static export is automatic via `next.config.js`)
 - Syncs `/out/` to S3 (`aws s3 sync`)
 - Invalidates CloudFront cache (`aws cloudfront create-invalidation`)
 
