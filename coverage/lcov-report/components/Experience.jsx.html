@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for components/Education.jsx</title>
+    <title>Code coverage report for components/Experience.jsx</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../prettify.css" />
     <link rel="stylesheet" href="../base.css" />
@@ -19,13 +19,13 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../index.html">All files</a> / <a href="index.html">components</a> Education.jsx</h1>
+        <h1><a href="../index.html">All files</a> / <a href="index.html">components</a> Experience.jsx</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>2/2</span>
+                <span class='fraction'>3/3</span>
             </div>
         
             
@@ -39,14 +39,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/2</span>
+                <span class='fraction'>3/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>2/2</span>
+                <span class='fraction'>3/3</span>
             </div>
         
             
@@ -76,8 +76,18 @@
 <a name='L11'></a><a href='#L11'>11</a>
 <a name='L12'></a><a href='#L12'>12</a>
 <a name='L13'></a><a href='#L13'>13</a>
-<a name='L14'></a><a href='#L14'>14</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L14'></a><a href='#L14'>14</a>
+<a name='L15'></a><a href='#L15'>15</a>
+<a name='L16'></a><a href='#L16'>16</a>
+<a name='L17'></a><a href='#L17'>17</a>
+<a name='L18'></a><a href='#L18'>18</a>
+<a name='L19'></a><a href='#L19'>19</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -89,14 +99,19 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">export default function Education({ education }) {
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">export default function Experience({ experiences }) {
   return (
     &lt;section className="mb-12"&gt;
-      &lt;h2 className="text-2xl font-bold mb-4"&gt;Education&lt;/h2&gt;
-      {education.map((e, i) =&gt; (
-        &lt;div key={i} className="mb-4"&gt;
-          &lt;h4 className="font-semibold"&gt;{e.degree}&lt;/h4&gt;
-          &lt;p className="text-gray-600"&gt;{e.school} | {e.time}&lt;/p&gt;
+      &lt;h2 className="text-2xl font-bold mb-4"&gt;Experience&lt;/h2&gt;
+      {experiences.map((exp, idx) =&gt; (
+        &lt;div key={idx} className="mb-6"&gt;
+          &lt;h3 className="text-xl font-semibold"&gt;{exp.title}&lt;/h3&gt;
+          &lt;p className="text-gray-600"&gt;{exp.company} | {exp.period}&lt;/p&gt;
+          &lt;ul className="list-disc list-inside mt-2 space-y-1"&gt;
+            {exp.details.map((d, i) =&gt; (
+              &lt;li key={i}&gt;{d}&lt;/li&gt;
+            ))}
+          &lt;/ul&gt;
         &lt;/div&gt;
       ))}
     &lt;/section&gt;

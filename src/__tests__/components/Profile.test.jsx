@@ -1,7 +1,7 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '../utils/test-utils';
 import Profile from '../../components/Profile';
 
-describe.skip('Profile Component', () => {
+describe('Profile Component', () => {
   const mockProfile = {
     name: 'Frank Alvarado',
     title: 'Software Engineer',
@@ -13,27 +13,40 @@ describe.skip('Profile Component', () => {
   };
 
   it('renders the profile name correctly', () => {
-    render(<Profile profile={mockProfile} />);
-    const nameElement = screen.getByText('Frank Alvarado');
-    expect(nameElement).toBeInTheDocument();
+    const { container } = render(<Profile profile={mockProfile} />);
+    expect(container.textContent).toContain('Frank Alvarado');
   });
 
   it('renders the profile title correctly', () => {
-    render(<Profile profile={mockProfile} />);
-    const titleElement = screen.getByText('Software Engineer');
-    expect(titleElement).toBeInTheDocument();
+    const { container } = render(<Profile profile={mockProfile} />);
+    expect(container.textContent).toContain('Software Engineer');
   });
 
   it('renders contact links correctly', () => {
-    render(<Profile profile={mockProfile} />);
+    const { container } = render(<Profile profile={mockProfile} />);
     
-    const emailLink = screen.getByText('Email');
-    expect(emailLink).toHaveAttribute('href', 'mailto:frank@example.com');
+    // Find all links in the rendered component
+    const links = container.querySelectorAll('a');
     
-    const websiteLink = screen.getByText('Website');
-    expect(websiteLink).toHaveAttribute('href', 'https://frankk.me');
+    // Convert NodeList to Array for easier testing
+    const linkArray = Array.from(links);
     
-    const githubLink = screen.getByText('GitHub');
-    expect(githubLink).toHaveAttribute('href', 'https://github.com/frank-alvarado');
+    // Check that we have expected links
+    expect(linkArray.length).toBeGreaterThanOrEqual(3);
+    
+    // Find specific links by their href attributes
+    const emailLink = linkArray.find(link => link.href.includes('mailto:frank@example.com'));
+    const websiteLink = linkArray.find(link => link.href.includes('frankk.me'));
+    const githubLink = linkArray.find(link => link.href.includes('github.com'));
+    
+    // Verify links exist
+    expect(emailLink).toBeDefined();
+    expect(websiteLink).toBeDefined();
+    expect(githubLink).toBeDefined();
+    
+    // Check link text
+    expect(emailLink.textContent).toBe('Email');
+    expect(websiteLink.textContent).toBe('Website');
+    expect(githubLink.textContent).toBe('GitHub');
   });
 });

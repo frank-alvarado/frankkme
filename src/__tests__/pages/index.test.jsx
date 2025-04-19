@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '../utils/test-utils';
 import Home from '../../pages/index';
 
 // Mock the components used in the Home page
@@ -26,7 +26,7 @@ jest.mock('../../components/Skills', () => {
   };
 });
 
-describe.skip('Home Page', () => {
+describe('Home Page', () => {
   const mockProps = {
     profile: {
       name: 'Frank Alvarado',
@@ -40,21 +40,24 @@ describe.skip('Home Page', () => {
 
   it('renders the page title correctly', () => {
     render(<Home {...mockProps} />);
-    // Check document title (needs jest-dom)
+    // Check document title using jest-dom
     expect(document.title).toBe('Frank Alvarado | Software Engineer');
   });
 
   it('renders all CV components', () => {
-    render(<Home {...mockProps} />);
+    const { container } = render(<Home {...mockProps} />);
 
-    expect(screen.getByTestId('mock-profile')).toBeInTheDocument();
-    expect(screen.getByTestId('mock-experience')).toBeInTheDocument();
-    expect(screen.getByTestId('mock-education')).toBeInTheDocument();
-    expect(screen.getByTestId('mock-skills')).toBeInTheDocument();
+    // Use the container to check for test IDs
+    expect(container.querySelector('[data-testid="mock-profile"]')).not.toBeNull();
+    expect(container.querySelector('[data-testid="mock-experience"]')).not.toBeNull();
+    expect(container.querySelector('[data-testid="mock-education"]')).not.toBeNull();
+    expect(container.querySelector('[data-testid="mock-skills"]')).not.toBeNull();
   });
 
   it('passes the correct props to Profile component', () => {
-    render(<Home {...mockProps} />);
-    expect(screen.getByTestId('mock-profile')).toHaveTextContent('Frank Alvarado');
+    const { container } = render(<Home {...mockProps} />);
+    const profileElement = container.querySelector('[data-testid="mock-profile"]');
+    expect(profileElement).not.toBeNull();
+    expect(profileElement.textContent).toBe('Frank Alvarado');
   });
 });
