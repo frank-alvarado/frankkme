@@ -27,10 +27,8 @@ jobs:
           terraform_version: '1.5.0'
 
       - name: Terraform Init
-        run: terraform init -reconfigure \
-          -backend-config="bucket=${{ secrets.S3_BUCKET_NAME }}" \
-          -backend-config="region=${{ env.AWS_REGION }}"
         working-directory: infrastructure
+        run: terraform init -reconfigure -backend-config=bucket=${{ secrets.S3_BUCKET_NAME }} -backend-config=region=${{ env.AWS_REGION }}
 
       - name: Import existing S3 bucket
         working-directory: infrastructure
