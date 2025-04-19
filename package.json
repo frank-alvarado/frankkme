@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -c ./config/next.config.js",
-    "build": "next build -c ./config/next.config.js",
-    "start": "next start -c ./config/next.config.js",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
     "test": "jest --coverage",
     "test:ci": "jest --ci --coverage --coverageReporters=json --coverageReporters=lcov"
   },

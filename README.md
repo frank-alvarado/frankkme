@@ -1,6 +1,7 @@
 # frankk.me
 
 [![CI/CD](https://github.com/frank-alvarado/frankkme/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/frank-alvarado/frankkme/actions/workflows/ci-cd.yml)
+[![codecov](https://codecov.io/gh/frank-alvarado/frankkme/graph/badge.svg?token=ZKIJLTCRF3)](https://codecov.io/gh/frank-alvarado/frankkme)
 [Live Site](https://frankk.me)
 
 Personal website / online CV built with Next.js & Tailwind CSS
