@@ -7,6 +7,11 @@ output "cloudfront_domain" {
   value = aws_cloudfront_distribution.cdn.domain_name
 }
 
+output "cloudfront_distribution_id" {
+  description = "CloudFront distribution ID for the site"
+  value       = aws_cloudfront_distribution.cdn.id
+}
+
 // Output DNS validation options for ACM
 output "domain_validation_options" {
   value = {
