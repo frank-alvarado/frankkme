@@ -26,6 +26,17 @@ jobs:
         run: terraform init
         working-directory: infrastructure
 
+      - name: Import existing S3 bucket
+        working-directory: infrastructure
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ env.AWS_REGION }}
+        run: |
+          if ! terraform state list | grep -q aws_s3_bucket.site; then
+            terraform import aws_s3_bucket.site ${{ secrets.S3_BUCKET_NAME }}
+          fi
+
       - name: Terraform Apply
         run: terraform apply -auto-approve
         working-directory: infrastructure
