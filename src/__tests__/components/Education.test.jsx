@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import Education from '../Education';
+import Education from '../../components/Education';
 
 describe.skip('Education Component', () => {
   const mockEducation = [

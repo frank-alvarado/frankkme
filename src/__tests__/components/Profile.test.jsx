@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import Profile from '../Profile';
+import Profile from '../../components/Profile';
 
 describe.skip('Profile Component', () => {
   const mockProfile = {
