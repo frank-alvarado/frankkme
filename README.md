@@ -26,6 +26,8 @@ This project is deployed via GitHub Actions. Ensure you’ve configured the foll
 - `AWS_SECRET_ACCESS_KEY`
 - `S3_BUCKET_NAME`
 - `CLOUDFRONT_DISTRIBUTION_ID`
+- `CLOUDFLARE_API_TOKEN`
+- `CLOUDFLARE_ZONE_ID`
 
 Pushes to the `main` branch trigger:
 - Install dependencies: `npm ci`
@@ -34,12 +36,18 @@ Pushes to the `main` branch trigger:
 - Invalidate CloudFront cache: `aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"`
 
 ## Infrastructure
-Terraform in `/terraform`. To provision:
+Infrastructure as code in `/infrastructure`. Ensure Terraform variables are set (`s3_bucket_name`, `domain_name`, `cloudflare_api_token`, `cloudflare_zone_id`). To provision:
 ```bash
-cd terraform
+cd infrastructure
 terraform init
 terraform apply
 ```
+After applying, retrieve outputs:
+```bash
+terraform output cloudfront_domain
+terraform output domain_validation_options
+```
+Terraform provisions Cloudflare DNS records automatically for your ACM validation and site CNAME, so no manual DNS steps are required.
 
 ## Editing Content
 All CV content is centralized in `data/cv.yml`. Modify your profile, experiences, education, and skills in that file. Commit & push to `main` to rebuild and redeploy.

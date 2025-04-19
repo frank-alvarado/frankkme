@@ -14,7 +14,12 @@ variable "domain_name" {
   type        = string
 }
 
-variable "route53_zone_id" {
-  description = "Route53 Hosted Zone ID for the custom domain"
+variable "cloudflare_api_token" {
+  description = "Cloudflare API token with DNS edit permissions"
+  type        = string
+}
+
+variable "cloudflare_zone_id" {
+  description = "Cloudflare Zone ID for frankk.me"
   type        = string
 }

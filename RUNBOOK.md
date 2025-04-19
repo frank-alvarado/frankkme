@@ -7,9 +7,9 @@
 - GitHub repository cloned locally
 
 ---
-## 1. Provision AWS Infrastructure (Terraform)
-1. `cd terraform`
-2. Edit `variables.tf`:
+## 1. Provision AWS Infrastructure
+1. `cd infrastructure`
+2. Edit `variables.tf` in the `infrastructure/` folder:
    ```hcl
    variable "s3_bucket_name" { default = "<YOUR_UNIQUE_BUCKET>" }
    variable "domain_name"    { default = "frankk.me" }

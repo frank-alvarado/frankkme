@@ -33,19 +33,10 @@ resource "aws_acm_certificate" "cert" {
   validation_method = "DNS"
 }
 
-resource "aws_route53_record" "cert_validation" {
-  for_each = { for o in aws_acm_certificate.cert.domain_validation_options : o.domain_name => o }
-
-  zone_id = var.route53_zone_id
-  name    = each.value.resource_record_name
-  type    = each.value.resource_record_type
-  records = [each.value.resource_record_value]
-  ttl     = 60
-}
-
+/* AWS Route53 validation removed in favor of Cloudflare provider */
 resource "aws_acm_certificate_validation" "cert" {
   certificate_arn         = aws_acm_certificate.cert.arn
-  validation_record_fqdns = [for r in aws_route53_record.cert_validation : r.fqdn]
+  validation_record_fqdns = [for r in cloudflare_record.cert_validation : r.hostname]
 }
 
 resource "aws_cloudfront_origin_access_identity" "oai" {
@@ -98,14 +89,23 @@ resource "aws_cloudfront_distribution" "cdn" {
   price_class         = "PriceClass_100"
 }
 
-resource "aws_route53_record" "alias" {
-  zone_id = var.route53_zone_id
-  name    = var.domain_name
-  type    = "A"
+/* AWS Route53 alias removed: Cloudflare will manage DNS */
 
-  alias {
-    name                   = aws_cloudfront_distribution.cdn.domain_name
-    zone_id                = aws_cloudfront_distribution.cdn.hosted_zone_id
-    evaluate_target_health = false
-  }
+// Cloudflare DNS records for ACM validation and CNAME
+resource "cloudflare_record" "cert_validation" {
+  for_each = { for o in aws_acm_certificate.cert.domain_validation_options : o.domain_name => o }
+  zone_id = var.cloudflare_zone_id
+  name    = each.value.resource_record_name
+  type    = each.value.resource_record_type
+  value   = each.value.resource_record_value
+  ttl     = 60
+}
+
+resource "cloudflare_record" "cname" {
+  zone_id = var.cloudflare_zone_id
+  name    = var.domain_name
+  type    = "CNAME"
+  value   = aws_cloudfront_distribution.cdn.domain_name
+  proxied = true
+  ttl     = 1
 }
