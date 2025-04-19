@@ -25,6 +25,7 @@
    ```
    - Confirm when prompted
    - Note outputs: `s3_bucket_name`, `cloudfront_domain`, and `domain_validation_options`
+   - Retrieve S3 bucket name: `terraform output s3_bucket_name`
 
 ---
 ## 2. Configure GitHub Secrets

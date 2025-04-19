@@ -1,5 +1,6 @@
 output "s3_bucket_name" {
-  value = aws_s3_bucket.site.bucket
+  description = "Name of the S3 bucket hosting the site"
+  value       = aws_s3_bucket.site.bucket
 }
 
 output "cloudfront_domain" {
