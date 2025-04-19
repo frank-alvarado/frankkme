@@ -14,6 +14,18 @@ resource "aws_s3_bucket" "site" {
   force_destroy = true
 }
 
+resource "aws_s3_bucket_website_configuration" "site" {
+  bucket = aws_s3_bucket.site.id
+
+  index_document {
+    suffix = "index.html"
+  }
+
+  error_document {
+    key = "prod/404.html"
+  }
+}
+
 # Terraform state bucket with versioning enabled
 resource "aws_s3_bucket" "terraform_state" {
   bucket        = "${var.s3_bucket_name}-terraform-state"
@@ -78,6 +90,7 @@ resource "aws_cloudfront_origin_access_identity" "oai" {
 
 resource "aws_cloudfront_distribution" "cdn" {
   enabled = true
+  default_root_object = "prod/index.html"
 
   aliases = [var.domain_name]
 
