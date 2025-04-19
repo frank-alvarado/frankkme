@@ -14,18 +14,6 @@ resource "aws_s3_bucket" "site" {
   force_destroy = true
 }
 
-resource "aws_s3_bucket_website_configuration" "site" {
-  bucket = aws_s3_bucket.site.id
-
-  index_document {
-    suffix = "index.html"
-  }
-
-  error_document {
-    key = "prod/404.html"
-  }
-}
-
 # Terraform state bucket with versioning enabled
 resource "aws_s3_bucket" "terraform_state" {
   bucket        = "${var.s3_bucket_name}-terraform-state"
@@ -90,7 +78,6 @@ resource "aws_cloudfront_origin_access_identity" "oai" {
 
 resource "aws_cloudfront_distribution" "cdn" {
   enabled = true
-  default_root_object = "prod/index.html"
 
   aliases = [var.domain_name]
 
@@ -133,7 +120,8 @@ resource "aws_cloudfront_distribution" "cdn" {
     }
   }
 
-  price_class = "PriceClass_100"
+  default_root_object = "index.html"
+  price_class         = "PriceClass_100"
 }
 
 /* AWS Route53 alias removed: Cloudflare will manage DNS */
@@ -169,18 +157,3 @@ resource "cloudflare_record" "cname" {
   ttl     = 1
   allow_overwrite = true
 }
-
-# PR Preview DNS record - Wildcard subdomain for preview environments
-resource "cloudflare_record" "pr_wildcard" {
-  zone_id         = local.cf_zone_id
-  name            = "pr-*"
-  type            = "CNAME"
-  value           = "${var.s3_bucket_name}.s3-website-${data.aws_region.current.name}.amazonaws.com"
-  proxied         = true
-  ttl             = 1
-  allow_overwrite = true
-}
-
-# Retrieve current region
-data "aws_region" "current" {}
-
