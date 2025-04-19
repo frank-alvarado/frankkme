@@ -133,8 +133,7 @@ resource "aws_cloudfront_distribution" "cdn" {
     }
   }
 
-  default_root_object = "index.html"
-  price_class         = "PriceClass_100"
+  price_class = "PriceClass_100"
 }
 
 /* AWS Route53 alias removed: Cloudflare will manage DNS */

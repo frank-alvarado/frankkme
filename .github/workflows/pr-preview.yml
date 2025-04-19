@@ -40,8 +40,8 @@ jobs:
 
       - name: Create or update Cloudflare DNS record for PR
         run: |
-          # Install jq for JSON parsing
-          which jq || apt-get update && apt-get install -y jq
+          # Check if jq is available (should be pre-installed on GitHub runners)
+          which jq || sudo apt-get update && sudo apt-get install -y jq
           
           # Check if DNS record exists
           RECORD_ID=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones/${{ secrets.CLOUDFLARE_ZONE_ID }}/dns_records?name=pr-${{ env.PR_NUMBER }}.frankk.me" \
