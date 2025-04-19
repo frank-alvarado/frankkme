@@ -11,6 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       AWS_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: us-east-1
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
       TF_VAR_s3_bucket_name: ${{ secrets.S3_BUCKET_NAME }}
@@ -28,18 +31,10 @@ jobs:
 
       - name: Terraform Init
         working-directory: infrastructure
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: ${{ env.AWS_REGION }}
         run: terraform init -reconfigure -backend-config=bucket=${{ secrets.S3_BUCKET_NAME }} -backend-config=region=${{ env.AWS_REGION }}
 
       - name: Import existing S3 bucket
         working-directory: infrastructure
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: ${{ env.AWS_REGION }}
         run: |
           if ! terraform state list | grep -q aws_s3_bucket.site; then
             terraform import aws_s3_bucket.site ${{ secrets.S3_BUCKET_NAME }}
@@ -47,28 +42,22 @@ jobs:
 
       - name: Import existing CloudFront distribution
         working-directory: infrastructure
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: ${{ env.AWS_REGION }}
         run: |
-          # install jq for JSON parsing
-          sudo apt-get update && sudo apt-get install -y jq
-          # find and import existing CloudFront distribution by alias
-          domain=${TF_VAR_domain_name}
-          dist_id=$(aws cloudfront list-distributions --output json \
-            | jq -r ".DistributionList.Items[] | select((.Aliases.Items // []) | index(\"${domain}\")) | .Id")
-          if [ -n "$dist_id" ]; then
-            terraform import aws_cloudfront_distribution.cdn $dist_id
+          if ! terraform state list | grep -q aws_cloudfront_distribution.cdn; then
+            # install jq for JSON parsing
+            sudo apt-get update && sudo apt-get install -y jq
+            # find and import existing CloudFront distribution by alias
+            domain=${TF_VAR_domain_name}
+            dist_id=$(aws cloudfront list-distributions --output json \
+              | jq -r ".DistributionList.Items[] | select((.Aliases.Items // []) | index(\"${domain}\")) | .Id")
+            if [ -n "$dist_id" ]; then
+              terraform import aws_cloudfront_distribution.cdn $dist_id
+            fi
           fi
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
         working-directory: infrastructure
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: ${{ env.AWS_REGION }}
 
   build_and_deploy:
     name: Build and Deploy Site
@@ -76,6 +65,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       AWS_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: us-east-1
       S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
       CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
     steps:
@@ -86,14 +78,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-
-      - name: Cache NPM modules
-        uses: actions/cache@v3
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-npm-
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
@@ -101,12 +86,6 @@ jobs:
       - name: Build static site
         run: npm run build
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
 
       - name: Sync to S3
         uses: jakejarvis/s3-sync-action@v0.5.1
@@ -114,9 +93,6 @@ jobs:
           args: --delete --cache-control max-age=60
         env:
           AWS_S3_BUCKET: ${{ env.S3_BUCKET_NAME }}
-          AWS_REGION: ${{ env.AWS_REGION }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           SOURCE_DIR: out/
 
       - name: Invalidate CloudFront cache
@@ -124,7 +100,3 @@ jobs:
           aws cloudfront create-invalidation \
             --distribution-id ${{ env.CLOUDFRONT_DISTRIBUTION_ID }} \
             --paths '/*'
-        env:
-          AWS_REGION: ${{ env.AWS_REGION }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
