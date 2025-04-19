@@ -170,13 +170,17 @@ resource "cloudflare_record" "cname" {
   allow_overwrite = true
 }
 
-# Wildcard DNS record for PR preview environments
-resource "cloudflare_record" "wildcard" {
+# PR Preview DNS record - Wildcard subdomain for preview environments
+resource "cloudflare_record" "pr_wildcard" {
   zone_id         = local.cf_zone_id
-  name            = "*.${var.domain_name}"
+  name            = "pr-*"
   type            = "CNAME"
-  value           = aws_cloudfront_distribution.cdn.domain_name
+  value           = "${var.s3_bucket_name}.s3-website-${data.aws_region.current.name}.amazonaws.com"
   proxied         = true
   ttl             = 1
   allow_overwrite = true
 }
+
+# Retrieve current region
+data "aws_region" "current" {}
+
