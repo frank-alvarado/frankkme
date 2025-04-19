@@ -40,10 +40,10 @@ The production site is served from the `/prod/` folder in the S3 bucket. CloudFr
 
 ### PR Preview Deployments
 Pull requests get automatic preview deployments:
-- Each PR gets a dedicated preview URL: `https://dev-{PR_NUMBER}.frankk.me/pr-{PR_NUMBER}/`
+- Each PR gets a dedicated preview URL: `https://pr-{PR_NUMBER}.frankk.me/pr-{PR_NUMBER}/`
 - Preview updates automatically when PR code changes
 - A comment with the preview link is posted on the PR
-- Preview environments leverage the same CloudFront distribution through path-based routing
+- Preview environments use S3 website hosting with Cloudflare DNS
 
 ## Infrastructure
 Infrastructure as code in `/infrastructure`. Ensure Terraform variables are set (`s3_bucket_name`, `domain_name`, `cloudflare_api_token`, `cloudflare_zone_id`). 
