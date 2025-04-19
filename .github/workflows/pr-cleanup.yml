@@ -1,0 +1,39 @@
+name: PR Cleanup
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  cleanup:
+    name: Clean up PR preview
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    env:
+      # AWS credentials
+      AWS_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Delete PR preview from S3
+        run: |
+          # Delete the PR preview folder from S3
+          aws s3 rm s3://${{ secrets.S3_BUCKET_NAME }}/pr-${{ env.PR_NUMBER }}/ --recursive
+          echo "Deleted PR preview from S3 bucket: /pr-${{ env.PR_NUMBER }}/"
+
+      - name: Comment on PR
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `🧹 PR preview environment has been cleaned up.`
+            })
