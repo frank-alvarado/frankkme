@@ -20,6 +20,16 @@ coverage:
         target: auto
         threshold: 5%
         if_ci_failed: error
+  group:
+    components:
+      pattern: "src/components/**/*.{js,jsx,ts,tsx}"
+      threshold: auto
+    pages:
+      pattern: "src/pages/**/*.{js,jsx,ts,tsx}"
+      threshold: auto
+    tests:
+      pattern: "src/__tests__/**/*.js"
+      threshold: auto
 
 ai:
   pr_review: true

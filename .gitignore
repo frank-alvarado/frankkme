@@ -10,6 +10,17 @@ infrastructure/*.tfstate
 infrastructure/*.tfstate.*
 infrastructure/.terraform.lock.hcl
 
+# Jest coverage output
+coverage/
+
+# Log files
+*.log
+npm-debug.log*
+yarn-error.log*
+
+# JetBrains IDEs
+.idea/
+
 # IDE
 .vscode/
 
