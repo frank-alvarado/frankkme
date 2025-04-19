@@ -11,9 +11,10 @@ export default function Home({ profile, experiences, education, skills }) {
   return (
     <>
       <Head>
-        <title>Frank Alvarado CV</title>
+        <title>Frank Alvarado | Software Engineer</title>
         <meta name="description" content="Frank Alvarado's CV" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><circle cx='16' cy='16' r='16' fill='%23007ACC'/><text x='16' y='21' font-size='16' text-anchor='middle' fill='white' font-family='Arial'>FA</text></svg>" />
       </Head>
 
       <main className="max-w-3xl mx-auto p-6">

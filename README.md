@@ -50,7 +50,7 @@ terraform output domain_validation_options
 Terraform provisions Cloudflare DNS records automatically for your ACM validation and site CNAME, so no manual DNS steps are required.
 
 ## Editing Content
-All CV content is centralized in `data/cv.yml`. Modify your profile, experiences, education, and skills in that file. Commit & push to `main` to rebuild and redeploy.
+All CV content is centralized in `src/data/cv.yml`. Modify your profile, experiences, education, and skills in that file. Commit & push to `main` to rebuild and redeploy.
 
 ## Runbook
 See [RUNBOOK.md](RUNBOOK.md) for detailed instructions
