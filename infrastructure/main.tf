@@ -109,12 +109,11 @@ locals {
 }
 
 resource "cloudflare_record" "cert_validation" {
-  for_each = { for o in aws_acm_certificate.cert.domain_validation_options : o.domain_name => o }
-  zone_id = local.cf_zone_id
-  name    = replace(each.value.resource_record_name, local.dv_suffix, "")
-  type    = each.value.resource_record_type
-  value   = each.value.resource_record_value
-  ttl     = 60
+  zone_id         = local.cf_zone_id
+  name            = replace(element(tolist(aws_acm_certificate.cert.domain_validation_options), 0).resource_record_name, local.dv_suffix, "")
+  type            = element(tolist(aws_acm_certificate.cert.domain_validation_options), 0).resource_record_type
+  value           = element(tolist(aws_acm_certificate.cert.domain_validation_options), 0).resource_record_value
+  ttl             = 60
   allow_overwrite = true
 }
 
