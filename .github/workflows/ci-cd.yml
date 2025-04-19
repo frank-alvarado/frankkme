@@ -11,6 +11,9 @@ on:
 jobs:
   test:
     name: Test and Coverage
+    defaults:
+      run:
+        working-directory: app
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -33,7 +36,8 @@ jobs:
         uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          directory: ./coverage/
+          directory: coverage/
+          config-file: config/codecov.yml
           fail_ci_if_error: true
           verbose: true
           
@@ -96,6 +100,9 @@ jobs:
 
   build_and_deploy:
     name: Build and Deploy Site
+    defaults:
+      run:
+        working-directory: app
     # Only run on pushes to main, skip for PRs
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: [test, infrastructure]
@@ -132,7 +139,7 @@ jobs:
           args: --delete --cache-control max-age=60
         env:
           AWS_S3_BUCKET: ${{ env.S3_BUCKET_NAME }}
-          SOURCE_DIR: out/
+          SOURCE_DIR: app/out/
 
       - name: Invalidate CloudFront cache
         run: |

@@ -16,10 +16,11 @@ Hosted on AWS S3 & CloudFront via GitHub Actions CI/CD
 - GitHub Actions (CI/CD)
 
 ## Getting Started
-1. Clone the repository
-2. Install dependencies: `npm install`
-3. Start the dev server: `npm run dev`
-4. Browse to `http://localhost:3000`
+- Clone the repository
+- Change into the app folder: `cd app`
+- Install dependencies: `npm install`
+- Start the dev server: `npm run dev`
+- Browse to `http://localhost:3000`
 
 ## Deployment
 Your site is fully deployed via GitHub Actions on pushes and pull requests against `main`.
@@ -41,11 +42,14 @@ Required GitHub Secrets (Settings → Secrets & variables → Actions):
 
 **Manual deploy** (optional):
 ```bash
-# 1. Install and build
+# 1. Change into app directory
+cd app
+
+# 2. Install and build
 npm ci
 npm run build
 
-# 2. Sync to S3 and invalidate cache
+# 3. Sync to S3 and invalidate cache
 aws s3 sync out/ s3/$S3_BUCKET_NAME --delete --cache-control max-age=60
 aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths '/*'
 ```

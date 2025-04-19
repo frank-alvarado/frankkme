@@ -10,7 +10,10 @@ infrastructure/*.tfstate
 infrastructure/*.tfstate.*
 infrastructure/.terraform.lock.hcl
 
-# Jest coverage output
+# app build & dependencies
+app/node_modules/
+app/.next/
+app/out/
 coverage/
 
 # Log files
