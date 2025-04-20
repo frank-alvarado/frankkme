@@ -14,7 +14,7 @@ coverage:
         target: auto
         threshold: 5%
         paths:
-          - "src/**/*.{js,jsx,ts,tsx}"
+          - "app/src/**/*.{js,jsx,ts,tsx}"
         if_ci_failed: error
     patch:
       default:
@@ -23,13 +23,13 @@ coverage:
         if_ci_failed: error
   group:
     components:
-      pattern: "src/components/**/*.{js,jsx,ts,tsx}"
+      pattern: "app/src/components/**/*.{js,jsx,ts,tsx}"
       threshold: auto
     pages:
-      pattern: "src/pages/**/*.{js,jsx,ts,tsx}"
+      pattern: "app/src/pages/**/*.{js,jsx,ts,tsx}"
       threshold: auto
     tests:
-      pattern: "src/__tests__/**/*.js"
+      pattern: "app/src/__tests__/**/*.js"
       threshold: auto
 
 ai:
