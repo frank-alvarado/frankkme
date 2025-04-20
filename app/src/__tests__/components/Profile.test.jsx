@@ -35,9 +35,9 @@ describe('Profile Component', () => {
     expect(linkArray.length).toBeGreaterThanOrEqual(3);
     
     // Find specific links by their href attributes
-    const emailLink = linkArray.find(link => link.href.includes('mailto:frank@example.com'));
-    const websiteLink = linkArray.find(link => link.href.includes('frankk.me'));
-    const githubLink = linkArray.find(link => link.href.includes('github.com'));
+    const emailLink = linkArray.find(link => new URL(link.href).protocol === 'mailto:' && new URL(link.href).pathname === 'frank@example.com');
+    const websiteLink = linkArray.find(link => new URL(link.href).hostname === 'frankk.me');
+    const githubLink = linkArray.find(link => new URL(link.href).hostname === 'github.com');
     
     // Verify links exist
     expect(emailLink).toBeDefined();
