@@ -150,3 +150,35 @@ jobs:
           aws cloudfront create-invalidation \
             --distribution-id ${{ env.CLOUDFRONT_DISTRIBUTION_ID }} \
             --paths '/*'
+
+  release_and_tag:
+    name: Tag & Release
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: build_and_deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Generate version tag
+        id: gen
+        run: |
+          DATE=$(date -u +"%Y-%m-%d")
+          SHA=${GITHUB_SHA::7}
+          TAG="$DATE-$SHA"
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+      - name: Create Git tag
+        run: |
+          git tag ${{ steps.gen.outputs.tag }}
+          git push origin ${{ steps.gen.outputs.tag }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.gen.outputs.tag }}
+          release_name: Release ${{ steps.gen.outputs.tag }}
+          body: "Release ${{ steps.gen.outputs.tag }} after successful deploy."
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

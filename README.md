@@ -43,8 +43,8 @@ A modern, statically-generated personal website and CV.
 - Terraform, AWS, Cloudflare
 
 ## Releases
-- Date-based versions in `YYYY-MM-DD` format
-- View all releases on [GitHub Releases](https://github.com/frank-alvarado/frankkme/releases)
+Tags are auto-generated after successful deployments in `YYYY-MM-DD-<shortSHA>` format.
+GitHub Releases are created automatically for each tag.
 
 ## Quick Start
 1. Clone the repo

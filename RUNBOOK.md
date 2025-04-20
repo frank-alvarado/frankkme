@@ -43,13 +43,11 @@ In your GitHub repo under **Settings > Secrets > Actions**, add:
 
 ---
 ## 3. CI/CD with GitHub Actions
-Your pipeline triggers on `push` to `main`:
 - Installs dependencies (`npm ci`)
-- Build the site: `npm run build` (static export is automatic via Next.js 15's `output: 'export'` in next.config.js)
-- Syncs `/out/` to S3 (`aws s3 sync`)
-- Invalidates CloudFront cache (`aws cloudfront create-invalidation`)
-
-No manual steps needed after commit & push.
+- Runs tests with coverage and uploads to Codecov
+- Builds the site (`npm run build` static export)
+- Syncs `/out/` to S3 and invalidates CloudFront cache
+- Auto-generates a date-based tag and creates a GitHub Release
 
 ---
 ## 4. Local Development & Testing
