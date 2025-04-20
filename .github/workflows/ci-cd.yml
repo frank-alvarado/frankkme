@@ -24,6 +24,7 @@ jobs:
         with:
           node-version: '18'
           cache: 'npm'
+          cache-dependency-path: app/package-lock.json
 
       - name: Install dependencies
         run: npm ci
@@ -37,7 +38,7 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: coverage/
-          config-file: config/codecov.yml
+          config-file: ./.github/codecov.yml
           fail_ci_if_error: true
           verbose: true
           
@@ -103,6 +104,9 @@ jobs:
     defaults:
       run:
         working-directory: app
+    environment:
+      name: production
+      url: https://frankk.me
     # Only run on pushes to main, skip for PRs
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: [test, infrastructure]
@@ -126,6 +130,7 @@ jobs:
         with:
           node-version: '18'
           cache: 'npm'
+          cache-dependency-path: app/package-lock.json
 
       - name: Install dependencies
         run: npm ci

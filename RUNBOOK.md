@@ -62,6 +62,10 @@ No manual steps needed after commit & push.
    npm run dev
    ```
 3. Preview at `http://localhost:3000`
+4. **Theme Toggle**
+   - A theme switch appears in the top‑right.
+   - It respects your OS preference on first load and persists choice in localStorage.
+   - Toggle between light and dark modes to verify styling.
 
 ---
 ## 5. Updating Content
