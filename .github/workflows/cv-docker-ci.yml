@@ -2,7 +2,7 @@
 name: CV Docker CI
 on:
   push:
-    branches: [ main, latex-cv-docker ]
+    branches: [ main ]
 
 jobs:
   cv:
