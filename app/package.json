@@ -10,13 +10,14 @@
     "test:ci": "jest --ci --coverage --coverageReporters=json --coverageReporters=lcov"
   },
   "dependencies": {
+    "@sentry/nextjs": "^9.13.0",
     "js-yaml": "^4.1.0",
     "next": "^15.3.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@codecov/webpack-plugin": "^1.9.0",
+    "@codecov/nextjs-webpack-plugin": "^1.9.0",
     "@next/bundle-analyzer": "^15.3.1",
     "@testing-library/jest-dom": "^6.1.5",
     "@testing-library/react": "^14.1.2",

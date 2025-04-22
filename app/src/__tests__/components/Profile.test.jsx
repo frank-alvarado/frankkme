@@ -3,12 +3,14 @@ import Profile from '../../components/Profile';
 
 describe('Profile Component', () => {
   const mockProfile = {
-    name: 'Frank Alvarado',
+    name: { first: 'Frank', last: 'Alvarado' },
     title: 'Software Engineer',
+    location: 'Houston, TX',
     contact: {
       email: 'frank@example.com',
       website: 'https://frankk.me',
-      github: 'https://github.com/frank-alvarado'
+      github: 'https://github.com/frank-alvarado',
+      linkedin: 'https://www.linkedin.com/in/fralvarado'
     }
   };
 
@@ -32,21 +34,24 @@ describe('Profile Component', () => {
     const linkArray = Array.from(links);
     
     // Check that we have expected links
-    expect(linkArray.length).toBeGreaterThanOrEqual(3);
+    expect(linkArray.length).toBeGreaterThanOrEqual(4);
     
     // Find specific links by their href attributes
-    const emailLink = linkArray.find(link => link.href.includes('mailto:frank@example.com'));
-    const websiteLink = linkArray.find(link => link.href.includes('frankk.me'));
-    const githubLink = linkArray.find(link => link.href.includes('github.com'));
+    const emailLink = linkArray.find(link => new URL(link.href).protocol === 'mailto:' && new URL(link.href).pathname === 'frank@example.com');
+    const websiteLink = linkArray.find(link => new URL(link.href).hostname === 'frankk.me');
+    const githubLink = linkArray.find(link => new URL(link.href).hostname === 'github.com');
+    const linkedinLink = linkArray.find(link => new URL(link.href).hostname === 'www.linkedin.com');
     
     // Verify links exist
     expect(emailLink).toBeDefined();
     expect(websiteLink).toBeDefined();
     expect(githubLink).toBeDefined();
+    expect(linkedinLink).toBeDefined();
     
     // Check link text
     expect(emailLink.textContent).toBe('Email');
     expect(websiteLink.textContent).toBe('Website');
     expect(githubLink.textContent).toBe('GitHub');
+    expect(linkedinLink.textContent).toBe('LinkedIn');
   });
 });
