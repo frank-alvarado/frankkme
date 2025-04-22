@@ -5,7 +5,12 @@ export default function Experience({ experiences }) {
       {experiences.map((exp, idx) => (
         <div key={idx} className="mb-6">
           <h3 className="text-xl font-semibold">{exp.title}</h3>
-          <p className="text-gray-600">{exp.company} | {exp.period}</p>
+          <p className="text-gray-600">
+            {exp.company}, {exp.location}
+          </p>
+          <p className="text-sm text-gray-500">
+            {exp.period}
+          </p>
           <ul className="list-disc list-inside mt-2 space-y-1">
             {exp.details.map((d, i) => (
               <li key={i}>{d}</li>

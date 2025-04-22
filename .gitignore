@@ -1,8 +1,32 @@
-node_modules/
+# macOS
+*.DS_Store
+
+# IDE
+.idea/
+.vscode/
+
+# Environment variables
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Next.js / Static export
 .next/
 out/
-# macOS
-.DS_Store
+app/.next/
+app/out/
+
+# Node modules
+app/node_modules/
+
+# Coverage reports
+coverage/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-error.log*
 
 # Terraform
 infrastructure/.terraform/
@@ -10,24 +34,11 @@ infrastructure/*.tfstate
 infrastructure/*.tfstate.*
 infrastructure/.terraform.lock.hcl
 
-# app build & dependencies
-app/node_modules/
-app/.next/
-app/out/
-coverage/
+# Python virtual environments & caches
+/.venv/
+**/__pycache__/
+*.py[cod]
 
-# Log files
-*.log
-npm-debug.log*
-yarn-error.log*
-
-# JetBrains IDEs
-.idea/
-
-# IDE
-.vscode/
-
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+# LaTeX build artifacts
+/latex/cv/build/
+*.synctex.gz

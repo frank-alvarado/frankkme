@@ -28,7 +28,7 @@ export default function Home({ profile, experiences, education, skills }) {
 }
 
 export async function getStaticProps() {
-  const filePath = path.join(process.cwd(), 'src', 'data', 'cv.yml')
+  const filePath = path.join(process.cwd(), '..', 'data', 'cv.yml')
   const fileContents = fs.readFileSync(filePath, 'utf8')
   const cv = yaml.load(fileContents)
   return { props: cv }
