@@ -14,6 +14,7 @@ A modern, statically-generated personal website and CV.
 - [Tech Stack](#tech-stack)
 - [Releases](#releases)
 - [Quick Start](#quick-start)
+- [LaTeX CV](#latex-cv)
 - [Project Structure](#project-structure)
 - [Deployment](#deployment)
   - [Automated Workflow](#automated-workflow)
@@ -52,6 +53,14 @@ GitHub Releases are created automatically for each tag.
 3. `npm install`
 4. `npm run dev`
 5. Visit [http://localhost:3000](http://localhost:3000)
+6. **Generate PDF CV:** at project root run:
+   ```bash
+   ./scripts/generate_cv.py
+   ```
+
+## LaTeX CV
+- LaTeX CV source & build scripts live in the `latex/` directory.
+- See `latex/README.md` for more information.
 
 ## Project Structure
 ```plaintext
@@ -72,7 +81,9 @@ frankkme/
 ├── .github/                # Workflows & deployments
 ├── README.md               # Project overview (this file)
 ├── RUNBOOK.md              # Runbook & troubleshooting
-└── SECURITY.md             # Security policy
+├── SECURITY.md             # Security policy
+└── latex/                  # LaTeX CV source & build scripts (see `latex/README.md`)
+
 ```
 
 ## Deployment

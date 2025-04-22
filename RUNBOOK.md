@@ -4,6 +4,8 @@
 - AWS CLI installed and configured with IAM creds
 - Terraform v1.5+ installed
 - Node.js v18+ and npm
+- Python 3.x and pip
+- TeX Live (with xelatex, latexmk)
 - GitHub repository cloned locally
 
 ---
@@ -67,9 +69,12 @@ In your GitHub repo under **Settings > Secrets > Actions**, add:
 
 ---
 ## 5. Updating Content
-- Modify components in `components/` or pages in `pages/`.
-- Style with Tailwind utilities in `styles/globals.css`.
-- Commit & push to `main` to trigger deployment.
+- **Website**: Modify components in `app/src/components/` or pages in `app/src/pages/`, and style with Tailwind in `app/src/styles/globals.css`.
+- **CV PDF**: Update `app/src/data/cv.yml` then run from repo root:
+  ```bash
+  ./scripts/generate_cv.py
+  ```
+- Commit & push to `main` to trigger CI/CD (which rebuilds both site and CV PDF).
 
 ---
 ## 6. Troubleshooting
