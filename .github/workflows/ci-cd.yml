@@ -137,6 +137,13 @@ jobs:
       - name: Build static site
         run: npm run build
 
+      - name: Generate CV PDF via Docker Action
+        uses: addnab/docker-run-action@v2
+        with:
+          image: frjalv/cv-builder:latest
+          options: "-v ${{ github.workspace }}/app/public:/work/app/public"
+          run: python3 scripts/generate_cv.py
+
       - name: Sync to S3
         uses: jakejarvis/s3-sync-action@v0.5.1
         with:

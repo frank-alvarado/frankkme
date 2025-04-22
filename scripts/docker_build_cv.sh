@@ -2,7 +2,7 @@
 # Usage: ./scripts/docker_build_cv.sh
 # Builds the Docker image for CV PDF generation
 set -euo pipefail
-IMAGE="frankkme-cv-full"
+IMAGE="frjalv/cv-builder:latest"
 DOCKERFILE="latex/Dockerfile"
 BUILD_CTX="."
 

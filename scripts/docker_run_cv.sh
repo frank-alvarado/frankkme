@@ -3,7 +3,7 @@
 # Runs the Docker container to generate cv.pdf into app/public
 set -euo pipefail
 
-IMAGE="frankkme-cv-full"
+IMAGE="frjalv/cv-builder:latest"
 
 echo "Generating CV PDF via Docker container..."
 docker run --rm \

@@ -1,0 +1,38 @@
+# CI for building and publishing CV Docker image and PDF
+name: CV Docker CI
+on:
+  push:
+    branches: [ main, latex-cv-docker ]
+
+jobs:
+  cv:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    - name: Build & push Docker image
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        file: latex/Dockerfile
+        push: true
+        tags: frjalv/cv-builder:latest
+
+    - name: Generate CV PDF via Docker Action
+      uses: addnab/docker-run-action@v2
+      with:
+        image: frjalv/cv-builder:latest
+        options: "-v ${{ github.workspace }}/app/public:/work/app/public"
+        run: python3 scripts/generate_cv.py
+
+    - name: Upload CV PDF artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: cv-pdf
+        path: app/public/cv.pdf
