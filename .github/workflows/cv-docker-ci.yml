@@ -3,6 +3,7 @@ name: CV Docker CI
 on:
   push:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   cv:
