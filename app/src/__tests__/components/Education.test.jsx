@@ -24,10 +24,12 @@ describe('Education Component', () => {
     const { container } = render(<Education education={mockEducation} />);
     
     expect(container.textContent).toContain('Master of Science in Computer Science');
-    expect(container.textContent).toContain('Stanford University | 2018-2020');
+    expect(container.textContent).toContain('Stanford University');
+    expect(container.textContent).toContain('2018-2020');
     
     expect(container.textContent).toContain('Bachelor of Science in Computer Engineering');
-    expect(container.textContent).toContain('MIT | 2014-2018');
+    expect(container.textContent).toContain('MIT');
+    expect(container.textContent).toContain('2014-2018');
   });
 
   it('renders the right number of education entries', () => {

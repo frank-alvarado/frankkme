@@ -29,12 +29,19 @@ A modern, statically-generated personal website and CV.
 - [Built With ❤️](#built-with-️️)
 
 ## Features
-- Static Site Generation with Next.js 15
-- Utility-first styling with Tailwind CSS
+- Static Site Generation with Next.js 15 (SSG + static export)
+- Utility-first styling via Tailwind CSS 3
 - Dark/light mode toggle (system-aware, persistent)
-- Unit tests (Jest, React Testing Library) with Codecov reporting
-- CI/CD pipeline (GitHub Actions) automating test, build, deploy
-- Infrastructure as Code (Terraform) on AWS S3 & CloudFront, Cloudflare
+- Centralized CV content in `data/cv.yml` → automated PDF via `./scripts/generate_cv.py`
+- CI/CD pipeline (GitHub Actions): tests, build, deploy
+- Infrastructure as Code with Terraform (AWS S3 & CloudFront, Cloudflare DNS)
+- Unit tests (Jest & React Testing Library) with Codecov reporting
+- Error monitoring with Sentry (client & server)
+- Bundle analysis (`@next/bundle-analyzer` + Codecov Webpack plugin)
+- Google Analytics integration
+- SEO & performance optimizations (lazy-loading images, code-splitting, cache-control)
+- Responsive, accessible design (ARIA, semantic HTML)
+- Markdown/YAML-driven content editing
 
 ## Tech Stack
 - Next.js 15
