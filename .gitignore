@@ -42,3 +42,6 @@ infrastructure/.terraform.lock.hcl
 # LaTeX build artifacts
 /latex/cv/build/
 *.synctex.gz
+
+# Ignore Jest JUnit test report artifacts
+app/reports/junit/
