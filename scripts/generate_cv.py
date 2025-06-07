@@ -9,8 +9,6 @@ import sys
 import subprocess
 import shutil
 from pathlib import Path
-import yaml
-
 try:
     import yaml
 except ImportError:
