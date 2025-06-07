@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, screen } from '../utils/test-utils';
 import Profile from '../../components/Profile';
 import Education from '../../components/Education';
 import Experience from '../../components/Experience';
@@ -9,12 +9,14 @@ import Skills from '../../components/Skills';
 describe('CV Component Tests', () => {
   // Mock data
   const mockProfile = {
-    name: 'Frank Alvarado',
+    name: { first: 'Frank', last: 'Alvarado' },
     title: 'Software Engineer',
+    location: 'Houston, TX',
     contact: {
       email: 'frank@example.com',
       website: 'https://frankk.me',
-      github: 'https://github.com/frank-alvarado'
+      github: 'https://github.com/frank-alvarado',
+      linkedin: 'https://linkedin.com/in/fralvarado'
     }
   };
 
@@ -35,49 +37,39 @@ describe('CV Component Tests', () => {
     {
       title: 'Senior Software Engineer',
       company: 'Tech Company',
+      location: 'Remote',
       period: '2021-Present',
       details: ['Led development of key features', 'Mentored junior engineers']
     }
   ];
 
-  // Skills component expects a flat array
-  const mockSkills = ['JavaScript', 'TypeScript', 'React', 'Next.js', 'AWS', 'Terraform'];
+  const mockSkills = {
+    proficient: ['JavaScript', 'React'],
+    familiar: ['TypeScript'],
+    tools: ['AWS']
+  };
 
-  // Mock implementation test that doesn't actually render but verifies components exist
-  test('Profile component is defined', () => {
-    expect(typeof Profile).toBe('function');
+  test('Profile renders expected text', () => {
+    render(<Profile profile={mockProfile} />);
+    expect(screen.getByText('Frank Alvarado')).toBeInTheDocument();
+    expect(screen.getByText('Software Engineer')).toBeInTheDocument();
   });
 
-  test('Education component is defined', () => {
-    expect(typeof Education).toBe('function');
+  test('Education renders expected text', () => {
+    render(<Education education={mockEducation} />);
+    expect(screen.getByText('Master of Computer Science')).toBeInTheDocument();
+    expect(screen.getByText('Stanford University')).toBeInTheDocument();
   });
 
-  test('Experience component is defined', () => {
-    expect(typeof Experience).toBe('function');
+  test('Experience renders expected text', () => {
+    render(<Experience experiences={mockExperiences} />);
+    expect(screen.getByText('Senior Software Engineer')).toBeInTheDocument();
+    expect(screen.getByText('Tech Company, Remote')).toBeInTheDocument();
   });
 
-  test('Skills component is defined', () => {
-    expect(typeof Skills).toBe('function');
-  });
-
-  // Snapshot tests instead of DOM testing
-  test('Profile renders with correct props without crashing', () => {
-    const ProfileComponent = Profile({ profile: mockProfile });
-    expect(ProfileComponent).toBeTruthy();
-  });
-
-  test('Education renders with correct props without crashing', () => {
-    const EducationComponent = Education({ education: mockEducation });
-    expect(EducationComponent).toBeTruthy();
-  });
-
-  test('Experience renders with correct props without crashing', () => {
-    const ExperienceComponent = Experience({ experiences: mockExperiences });
-    expect(ExperienceComponent).toBeTruthy();
-  });
-
-  test('Skills renders with correct props without crashing', () => {
-    const SkillsComponent = Skills({ skills: mockSkills });
-    expect(SkillsComponent).toBeTruthy();
+  test('Skills renders expected text', () => {
+    render(<Skills skills={mockSkills} />);
+    expect(screen.getByText('Proficient')).toBeInTheDocument();
+    expect(screen.getByText('JavaScript')).toBeInTheDocument();
   });
 });
