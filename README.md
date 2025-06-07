@@ -134,10 +134,10 @@ terraform apply -auto-approve
 ```
 
 ## Editing Content
-All CV data is centralized under `app/src/data/cv.yml`. To update your profile, experience, education, or skills, edit that file and push to `main`—the CI/CD pipeline will rebuild and redeploy your changes.
+All CV data is centralized under `data/cv.yml`. To update your profile, experience, education, or skills, edit that file and push to `main`—the CI/CD pipeline will rebuild and redeploy your changes.
 
 ## Additional Resources
-- Runbook & troubleshooting: [RUNBOOK.md]
+- Runbook & troubleshooting: [RUNBOOK.md](RUNBOOK.md)
 - Security policy: [SECURITY.md]
 
 ## Contributing
