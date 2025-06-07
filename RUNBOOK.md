@@ -70,7 +70,7 @@ In your GitHub repo under **Settings > Secrets > Actions**, add:
 ---
 ## 5. Updating Content
 - **Website**: Modify components in `app/src/components/` or pages in `app/src/pages/`, and style with Tailwind in `app/src/styles/globals.css`.
-- **CV PDF**: Update `app/src/data/cv.yml` then run from repo root:
+- **CV PDF**: Update `data/cv.yml` then run from repo root:
   ```bash
   ./scripts/generate_cv.py
   ```
