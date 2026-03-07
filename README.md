@@ -100,9 +100,10 @@ frankkme/
 - Build & static export
 - Sync to S3 & invalidate CloudFront
 
+AWS authentication uses [GitHub Actions OIDC](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services) to assume an IAM role with short-lived credentials — no static access keys are stored in secrets.
+
 ### Required GitHub Secrets
-- `AWS_ACCESS_KEY_ID`
-- `AWS_SECRET_ACCESS_KEY`
+- `AWS_ROLE_ARN` — IAM role ARN assumed via OIDC (no long-lived AWS keys needed)
 - `S3_BUCKET_NAME`
 - `CLOUDFRONT_DISTRIBUTION_ID`
 - `CLOUDFLARE_API_TOKEN`
