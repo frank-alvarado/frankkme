@@ -1,5 +1,8 @@
 name: CI/CD Pipeline
 
+permissions:
+  contents: read
+
 on:
   push:
     branches:
@@ -170,6 +173,8 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: build_and_deploy
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
