@@ -51,11 +51,6 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           report_type: test_results
 
-      - name: Analyze bundle size
-        env:
-          ANALYZE: 'true'
-        run: npm run build
-          
   infrastructure:
     name: Provision Infrastructure
     # Only run on pushes to main, skip for PRs
@@ -133,9 +128,8 @@ jobs:
       # Google Analytics ID
       NEXT_PUBLIC_GOOGLE_ANALYTICS_ID: ${{ secrets.GOOGLE_ANALYTICS_ID }}
 
-      # Sentry DSNs
+      # Sentry
       NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
-      SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

@@ -14,7 +14,6 @@ const customJestConfig = {
     'src/**/*.{js,jsx,ts,tsx}',
     '!src/**/*.d.ts',
     '!src/**/_*.{js,jsx,ts,tsx}',
-    '!src/instrumentation.js',
     '!src/instrumentation-client.js',
     '!**/node_modules/**',
   ],

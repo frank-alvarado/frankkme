@@ -33,7 +33,6 @@ coverage:
       threshold: auto
 
 ignore:
-  - "app/src/instrumentation.js"
   - "app/src/instrumentation-client.js"
 
 ai:

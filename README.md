@@ -38,7 +38,7 @@ A modern, statically-generated personal website and CV.
 - Infrastructure as Code with Terraform (AWS S3 & CloudFront, Cloudflare DNS)
 - Unit tests (Jest & React Testing Library) with Codecov reporting
 - Error monitoring with Sentry (client & server)
-- Bundle analysis (`@next/bundle-analyzer` + Codecov Webpack plugin)
+- Bundle analysis (`next experimental-analyze`)
 - Google Analytics integration
 - SEO & performance optimizations (lazy-loading images, code-splitting, cache-control)
 - Responsive, accessible design (ARIA, semantic HTML)

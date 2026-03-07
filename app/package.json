@@ -7,8 +7,9 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "next build --webpack",
+    "build": "next build",
     "start": "next start",
+    "analyze": "next experimental-analyze",
     "test": "jest --coverage",
     "test:ci": "jest --ci --coverage --coverageReporters=json --coverageReporters=lcov"
   },
@@ -20,8 +21,6 @@
     "react-dom": "^19.2.4"
   },
   "devDependencies": {
-    "@codecov/nextjs-webpack-plugin": "^1.9.1",
-    "@next/bundle-analyzer": "^16.1.6",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.1.5",
     "@testing-library/react": "^16.3.2",
