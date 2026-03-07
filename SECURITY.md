@@ -1,21 +1,14 @@
 # Security Policy
 
-## Supported Versions
-
-Use this section to tell people about which versions of your project are
-currently being supported with security updates.
-
-| Version | Supported          |
-| ------- | ------------------ |
-| 5.1.x   | :white_check_mark: |
-| 5.0.x   | :x:                |
-| 4.0.x   | :white_check_mark: |
-| < 4.0   | :x:                |
-
 ## Reporting a Vulnerability
 
-Use this section to tell people how to report a vulnerability.
+If you discover a security vulnerability, please report it privately via email to **frjalv@gmail.com** with the subject line `[frankk.me Security]`. Include:
+- A clear description of the issue and affected component(s).
+- Detailed steps to reproduce or a proof-of-concept.
+- The commit SHA or version (if known).
 
-Tell them where to go, how often they can expect to get an update on a
-reported vulnerability, what to expect if the vulnerability is accepted or
-declined, etc.
+Expect an acknowledgment within 48 hours. Patches or remediation timelines will depend on the severity and complexity of the issue. Please refrain from public disclosure until a fix is available.
+
+## Supported Versions & Updates
+
+This project is the personal website of Frank Alvarado and does not follow a formal versioning policy. Security fixes are applied as soon as possible on the `main` branch.

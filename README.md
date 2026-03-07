@@ -21,6 +21,7 @@ A modern, statically-generated personal website and CV.
   - [Required GitHub Secrets](#required-github-secrets)
   - [Manual Deploy (optional)](#manual-deploy-optional)
 - [Infrastructure](#infrastructure)
+- [Architecture Overview](#architecture-overview)
 - [Editing Content](#editing-content)
 - [Additional Resources](#additional-resources)
 - [Contributing](#contributing)
@@ -131,6 +132,21 @@ Then:
 ```bash
 terraform init -reconfigure -backend-config=bucket=${{ secrets.S3_BUCKET_NAME }}-terraform-state -backend-config=region=us-east-1
 terraform apply -auto-approve
+```
+
+## Architecture Overview
+
+```mermaid
+flowchart LR
+  DataCV[data/cv.yml] --> GenCV[scripts/generate_cv.py]
+  GenCV --> Tex[latex/cv]
+  Tex --> PDF[app/public/cv.pdf]
+  Src[app/src] --> Next[Next.js SSG]
+  Next --> Out[app/out]
+  PDF --> Out
+  Out --> S3[S3 & CloudFront]
+  S3 --> DNS[Cloudflare DNS]
+  DNS --> frankk.me[frankk.me]
 ```
 
 ## Editing Content
