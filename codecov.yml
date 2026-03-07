@@ -32,6 +32,10 @@ coverage:
       pattern: "app/src/__tests__/**/*.js"
       threshold: auto
 
+ignore:
+  - "app/src/instrumentation.js"
+  - "app/src/instrumentation-client.js"
+
 ai:
   pr_review: true
 

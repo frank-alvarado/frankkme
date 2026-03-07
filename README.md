@@ -3,7 +3,7 @@
 <!-- Badges: CI/CD, coverage, dependencies, bundle size, tech, infra, deployments, status, releases -->
 [![CI/CD](https://github.com/frank-alvarado/frankkme/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/frank-alvarado/frankkme/actions/workflows/ci-cd.yml) [![codecov](https://codecov.io/gh/frank-alvarado/frankkme/graph/badge.svg?token=ZKIJLTCRF3)](https://codecov.io/gh/frank-alvarado/frankkme)
 
-[![Next.js](https://img.shields.io/badge/Next.js-15.3.1-black?logo=next.js)](https://nextjs.org/) [![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-3.3.2-blue?logo=tailwind-css)](https://tailwindcss.com/) [![Terraform](https://img.shields.io/badge/Terraform-1.5.0-623ce4?logo=terraform)](https://www.terraform.io/) [![Cloudflare](https://img.shields.io/badge/Cloudflare-enabled-orange?logo=cloudflare)](https://cloudflare.com/) 
+[![Next.js](https://img.shields.io/badge/Next.js-16.1.6-black?logo=next.js)](https://nextjs.org/) [![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-3.4.17-blue?logo=tailwind-css)](https://tailwindcss.com/) [![Terraform](https://img.shields.io/badge/Terraform-1.5.0-623ce4?logo=terraform)](https://www.terraform.io/) [![Cloudflare](https://img.shields.io/badge/Cloudflare-enabled-orange?logo=cloudflare)](https://cloudflare.com/) 
 
 [![Deployments](https://img.shields.io/github/deployments/frank-alvarado/frankkme/production?label=Production&logo=github)](https://github.com/frank-alvarado/frankkme/deployments?environment=production) [![Website Status](https://img.shields.io/website-up-down-green-red/https/frankk.me?label=frankk.me)](https://frankk.me) [![Last Release](https://img.shields.io/github/release-date/frank-alvarado/frankkme?label=Last%20Release&logo=github)](https://github.com/frank-alvarado/frankkme/releases)
 
@@ -13,6 +13,7 @@ A modern, statically-generated personal website and CV.
 - [Features](#features)
 - [Tech Stack](#tech-stack)
 - [Releases](#releases)
+- [Prerequisites](#prerequisites)
 - [Quick Start](#quick-start)
 - [LaTeX CV](#latex-cv)
 - [Project Structure](#project-structure)
@@ -29,7 +30,7 @@ A modern, statically-generated personal website and CV.
 - [Built With ❤️](#built-with-️️)
 
 ## Features
-- Static Site Generation with Next.js 15 (SSG + static export)
+- Static Site Generation with Next.js 16 (SSG + static export)
 - Utility-first styling via Tailwind CSS 3
 - Dark/light mode toggle (system-aware, persistent)
 - Centralized CV content in `data/cv.yml` → automated PDF via `./scripts/generate_cv.py`
@@ -44,8 +45,8 @@ A modern, statically-generated personal website and CV.
 - Markdown/YAML-driven content editing
 
 ## Tech Stack
-- Next.js 15
-- Tailwind CSS 3.3.2
+- Next.js 16
+- Tailwind CSS 3.4
 - Jest & React Testing Library
 - GitHub Actions
 - Terraform, AWS, Cloudflare
@@ -54,13 +55,19 @@ A modern, statically-generated personal website and CV.
 Tags are auto-generated after successful deployments in `YYYY-MM-DD-<shortSHA>` format.
 GitHub Releases are created automatically for each tag.
 
+## Prerequisites
+- **Node.js 22** (LTS)
+- **npm**
+- **LaTeX** (`pdflatex`) — only needed for PDF CV generation
+- **Python 3** with dependencies from `requirements.txt` (`pip install -r requirements.txt`) — only needed for PDF CV generation
+
 ## Quick Start
 1. Clone the repo
 2. `cd app`
 3. `npm install`
 4. `npm run dev`
 5. Visit [http://localhost:3000](http://localhost:3000)
-6. **Generate PDF CV:** at project root run:
+6. **Generate PDF CV** (optional, from project root):
    ```bash
    ./scripts/generate_cv.py
    ```
@@ -109,6 +116,9 @@ AWS authentication uses [GitHub Actions OIDC](https://docs.github.com/en/actions
 - `CLOUDFLARE_API_TOKEN`
 - `CLOUDFLARE_ZONE_ID`
 - `CODECOV_TOKEN`
+- `GOOGLE_ANALYTICS_ID`
+- `NEXT_PUBLIC_SENTRY_DSN`
+- `SENTRY_DSN`
 
 ### Manual Deploy (optional)
 ```bash
@@ -120,26 +130,33 @@ aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID
 ```
 
 ## Infrastructure
-Infrastructure as code lives in the `infrastructure/` directory. Ensure Terraform variables are set in GitHub Actions Secrets (e.g. `TF_VAR_s3_bucket_name`, `TF_VAR_domain_name`, `TF_VAR_cloudflare_api_token`, `TF_VAR_cloudflare_zone_id`).
+Infrastructure as code lives in the `infrastructure/` directory. Terraform variables (`TF_VAR_s3_bucket_name`, `TF_VAR_domain_name`, `TF_VAR_cloudflare_api_token`, `TF_VAR_cloudflare_zone_id`) are set automatically in CI via GitHub Secrets.
 
-The project uses a dedicated state bucket (`${{ secrets.S3_BUCKET_NAME }}-terraform-state`). First-time setup:
+The project uses a dedicated state bucket (`<S3_BUCKET_NAME>-terraform-state`). First-time setup:
 ```bash
 cd infrastructure
-aws s3 mb s3://${{ secrets.S3_BUCKET_NAME }}-terraform-state
-aws s3api put-bucket-versioning --bucket ${{ secrets.S3_BUCKET_NAME }}-terraform-state --versioning-configuration Status=Enabled
+aws s3 mb s3://<S3_BUCKET_NAME>-terraform-state
+aws s3api put-bucket-versioning --bucket <S3_BUCKET_NAME>-terraform-state --versioning-configuration Status=Enabled
 ```
 Then:
 ```bash
-terraform init -reconfigure -backend-config=bucket=${{ secrets.S3_BUCKET_NAME }}-terraform-state -backend-config=region=us-east-1
+terraform init -reconfigure -backend-config=bucket=<S3_BUCKET_NAME>-terraform-state -backend-config=region=us-east-1
 terraform apply -auto-approve
 ```
+Replace `<S3_BUCKET_NAME>` with your actual bucket name.
 
 ## Editing Content
-All CV data is centralized under `data/cv.yml`. To update your profile, experience, education, or skills, edit that file and push to `main`—the CI/CD pipeline will rebuild and redeploy your changes.
+All CV data is centralized under `data/cv.yml`. To update your profile, experience, education, or skills, edit that file and push to `main` — the CI/CD pipeline will rebuild and redeploy the site.
+
+**Note:** The downloadable PDF CV (`app/public/cv.pdf`) is not auto-generated in CI. After editing `data/cv.yml`, regenerate and commit it manually:
+```bash
+./scripts/generate_cv.py
+```
+This requires LaTeX and `pyyaml` (see [Prerequisites](#prerequisites)).
 
 ## Additional Resources
 - Runbook & troubleshooting: [RUNBOOK.md](RUNBOOK.md)
-- Security policy: [SECURITY.md]
+- Security policy: [SECURITY.md](SECURITY.md)
 
 ## Contributing
 Contributions are welcome! Please open an issue or submit a pull request.

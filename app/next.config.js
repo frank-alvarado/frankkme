@@ -27,9 +27,9 @@ const sentryWebpackPluginOptions = {
   org: 'frankkme',
   project: 'javascript-nextjs',
   widenClientFileUpload: true,
-  tunnelRoute: '/monitoring',
-  disableLogger: true,
-  automaticVercelMonitors: true,
+  webpack: {
+    automaticVercelMonitors: true,
+  },
 };
 
 module.exports = withBundleAnalyzer(
