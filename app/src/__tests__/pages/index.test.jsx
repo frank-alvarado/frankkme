@@ -1,7 +1,8 @@
 import { render, screen } from '../utils/test-utils';
-import Home from '../../pages/index';
+import Home, { getStaticProps } from '../../pages/index';
+import fs from 'fs';
+import yaml from 'js-yaml';
 
-// Mock the components used in the Home page
 jest.mock('../../components/Profile', () => {
   return function MockProfile({ profile }) {
     return <div data-testid="mock-profile">{profile.name}</div>;
@@ -40,14 +41,12 @@ describe('Home Page', () => {
 
   it('renders the page title correctly', () => {
     render(<Home {...mockProps} />);
-    // Check document title using jest-dom
     expect(document.title).toBe('Frank Alvarado | Software Engineer');
   });
 
   it('renders all CV components', () => {
     const { container } = render(<Home {...mockProps} />);
 
-    // Use the container to check for test IDs
     expect(container.querySelector('[data-testid="mock-profile"]')).not.toBeNull();
     expect(container.querySelector('[data-testid="mock-experience"]')).not.toBeNull();
     expect(container.querySelector('[data-testid="mock-education"]')).not.toBeNull();
@@ -59,5 +58,36 @@ describe('Home Page', () => {
     const profileElement = container.querySelector('[data-testid="mock-profile"]');
     expect(profileElement).not.toBeNull();
     expect(profileElement.textContent).toBe('Frank Alvarado');
+  });
+
+  it('wraps content in a main element', () => {
+    const { container } = render(<Home {...mockProps} />);
+    expect(container.querySelector('main')).not.toBeNull();
+  });
+});
+
+describe('getStaticProps', () => {
+  it('reads cv.yml and returns parsed props', async () => {
+    const mockCv = {
+      profile: { name: 'Test User' },
+      experiences: [{ title: 'Dev' }],
+      education: [{ degree: 'CS' }],
+      skills: { languages: ['JS'] },
+    };
+
+    jest.spyOn(fs, 'readFileSync').mockReturnValue('mocked yaml');
+    jest.spyOn(yaml, 'load').mockReturnValue(mockCv);
+
+    const result = await getStaticProps();
+
+    expect(fs.readFileSync).toHaveBeenCalledWith(
+      expect.stringContaining('cv.yml'),
+      'utf8'
+    );
+    expect(yaml.load).toHaveBeenCalledWith('mocked yaml');
+    expect(result).toEqual({ props: mockCv });
+
+    fs.readFileSync.mockRestore();
+    yaml.load.mockRestore();
   });
 });
