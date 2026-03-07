@@ -8,7 +8,7 @@ all: pdf
 pdf:
 	@mkdir -p $(BUILD_DIR)
 	# Copy source files to build directory
-	@cp -R classes sections fonts images cv.tex $(BUILD_DIR)/
+	@cp -R sections images cv.tex $(BUILD_DIR)/
 	@cd $(BUILD_DIR) && $(LATEXMK) -pdf -silent \
 		-pdflatex="xelatex -interaction=nonstopmode -shell-escape" cv.tex
 

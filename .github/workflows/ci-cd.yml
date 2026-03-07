@@ -7,6 +7,7 @@ on:
   pull_request:
     branches: 
       - main
+  workflow_dispatch:
 
 jobs:
   test:
@@ -98,6 +99,21 @@ jobs:
         working-directory: infrastructure
         run: terraform apply -auto-approve
 
+  generate_cv:
+    name: Generate CV PDF
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Generate CV PDF via Docker Action
+        uses: addnab/docker-run-action@v2
+        with:
+          image: frjalv/cv-builder:latest
+          options: "-v ${{ github.workspace }}/app/public:/work/app/public"
+          run: python3 scripts/generate_cv.py
+
   build_and_deploy:
     name: Build and Deploy Site
     defaults:
@@ -108,7 +124,7 @@ jobs:
       url: https://frankk.me
     # Only run on pushes to main, skip for PRs
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: [test, infrastructure]
+    needs: [test, infrastructure, generate_cv]
     runs-on: ubuntu-latest
     env:
       # AWS credentials

@@ -1,24 +1,20 @@
 output "s3_bucket_name" {
   description = "Name of the S3 bucket hosting the site"
-  value       = aws_s3_bucket.site.bucket
+  value       = module.static_site.s3_bucket_name
 }
 
 output "cloudfront_domain" {
-  value = aws_cloudfront_distribution.cdn.domain_name
+  description = "CloudFront distribution domain name"
+  value       = module.static_site.cloudfront_domain
 }
 
 output "cloudfront_distribution_id" {
   description = "CloudFront distribution ID for the site"
-  value       = aws_cloudfront_distribution.cdn.id
+  value       = module.static_site.cloudfront_distribution_id
 }
 
-// Output DNS validation options for ACM
+// DNS validation options for ACM certificate
 output "domain_validation_options" {
-  value = {
-    for o in aws_acm_certificate.cert.domain_validation_options : o.domain_name => {
-      name  = o.resource_record_name
-      type  = o.resource_record_type
-      value = o.resource_record_value
-    }
-  }
+  description = "DNS validation options for ACM certificate"
+  value       = module.static_site.domain_validation_options
 }

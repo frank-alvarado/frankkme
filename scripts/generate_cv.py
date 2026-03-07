@@ -96,9 +96,18 @@ with open(edu_file, 'w', encoding='utf8') as f:
     f.write('\\end{cventries}\n')
 
 def build_cv():
-    # Build PDF via Makefile, output in build_dir
-    subprocess.run(['make'], cwd=str(cv_dir), check=True)
-    # Copy CV PDF directly to public folder
+    # Ensure build directory exists
+    build_dir.mkdir(parents=True, exist_ok=True)
+    # Build PDF via XeLaTeX (two runs for references)
+    for _ in range(2):
+        subprocess.run([
+            'xelatex',
+            '-interaction=nonstopmode',
+            '-shell-escape',
+            '-output-directory=build',
+            'cv.tex'
+        ], cwd=str(cv_dir), check=True)
+    # Copy CV PDF to public folder
     src_pdf = build_dir / 'cv.pdf'
     public_pdf = project_root / 'app' / 'public' / 'cv.pdf'
     shutil.copy(str(src_pdf), str(public_pdf))

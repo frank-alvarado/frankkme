@@ -1,0 +1,2 @@
+# Python dependencies for CV generation
+PyYAML==6.0.2
