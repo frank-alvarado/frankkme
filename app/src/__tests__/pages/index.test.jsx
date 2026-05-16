@@ -67,16 +67,41 @@ describe('Home Page', () => {
 });
 
 describe('getStaticProps', () => {
-  it('reads cv.yml and returns parsed props', async () => {
-    const mockCv = {
-      profile: { name: 'Test User' },
-      experiences: [{ title: 'Dev' }],
-      education: [{ degree: 'CS' }],
-      skills: { languages: ['JS'] },
-    };
+  const validCv = {
+    profile: {
+      name: { first: 'Test', last: 'User' },
+      title: 'Software Engineer',
+      location: 'Houston, TX',
+      contact: {
+        email: 'test@example.com',
+        website: 'https://example.com',
+        github: 'https://github.com/test',
+        linkedin: 'https://www.linkedin.com/in/test',
+      },
+    },
+    experiences: [
+      {
+        title: 'Dev',
+        company: 'Acme',
+        location: 'Houston, TX',
+        period: '2020 - PRESENT',
+        details: ['Did stuff'],
+      },
+    ],
+    education: [
+      {
+        degree: 'B.S.',
+        school: 'University',
+        location: 'Austin, TX',
+        time: '2016 - 2020',
+      },
+    ],
+    skills: { proficient: ['JS'], tools: ['Git'] },
+  };
 
+  it('reads cv.yml and returns parsed props', async () => {
     jest.spyOn(fs, 'readFileSync').mockReturnValue('mocked yaml');
-    jest.spyOn(yaml, 'load').mockReturnValue(mockCv);
+    jest.spyOn(yaml, 'load').mockReturnValue(validCv);
 
     const result = await getStaticProps();
 
@@ -85,7 +110,17 @@ describe('getStaticProps', () => {
       'utf8'
     );
     expect(yaml.load).toHaveBeenCalledWith('mocked yaml');
-    expect(result).toEqual({ props: mockCv });
+    expect(result).toEqual({ props: validCv });
+
+    fs.readFileSync.mockRestore();
+    yaml.load.mockRestore();
+  });
+
+  it('throws a readable error when cv.yml fails schema validation', async () => {
+    jest.spyOn(fs, 'readFileSync').mockReturnValue('mocked yaml');
+    jest.spyOn(yaml, 'load').mockReturnValue({ profile: { name: 'broken' } });
+
+    await expect(getStaticProps()).rejects.toThrow(/Invalid data\/cv\.yml/);
 
     fs.readFileSync.mockRestore();
     yaml.load.mockRestore();

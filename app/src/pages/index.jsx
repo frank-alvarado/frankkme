@@ -6,6 +6,7 @@ import Profile from '../components/Profile'
 import Experience from '../components/Experience'
 import Education from '../components/Education'
 import Skills from '../components/Skills'
+import { parseCv } from '../lib/cv-schema'
 
 export default function Home({ profile, experiences, education, skills }) {
   return (
@@ -30,6 +31,6 @@ export default function Home({ profile, experiences, education, skills }) {
 export async function getStaticProps() {
   const filePath = path.join(process.cwd(), '..', 'data', 'cv.yml')
   const fileContents = fs.readFileSync(filePath, 'utf8')
-  const cv = yaml.load(fileContents)
+  const cv = parseCv(yaml.load(fileContents))
   return { props: cv }
 }
